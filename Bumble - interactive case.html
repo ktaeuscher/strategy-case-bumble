@@ -1,0 +1,2016 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bumble's Strategic Crossroads - Strategy Canvas & VRIO Lab</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bumble-yellow: #FFC629;
+            --bumble-dark: #1E1E1E;
+            --hinge-purple: #5C5C5C;
+            --tinder-red: #FE3C72;
+            --success-green: #28a745;
+            --warning-orange: #fd7e14;
+            --info-blue: #17a2b8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            color: var(--bumble-dark);
+            margin-bottom: 8px;
+        }
+
+        .header .subtitle {
+            color: #666;
+            font-size: 1rem;
+        }
+
+        .screen {
+            display: none;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        .screen-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .screen-number {
+            background: var(--bumble-yellow);
+            color: var(--bumble-dark);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .screen-title {
+            font-size: 1.4rem;
+            color: var(--bumble-dark);
+        }
+
+        .time-badge {
+            margin-left: auto;
+            background: #f0f0f0;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        /* Crisis Stats Grid */
+        .crisis-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .crisis-stat {
+            background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 18px;
+            text-align: center;
+        }
+
+        .crisis-stat.negative {
+            border-left: 4px solid #dc3545;
+        }
+
+        .crisis-stat.neutral {
+            border-left: 4px solid var(--warning-orange);
+        }
+
+        .crisis-stat .stat-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--bumble-dark);
+        }
+
+        .crisis-stat .stat-label {
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 4px;
+        }
+
+        .crisis-stat .stat-detail {
+            font-size: 0.75rem;
+            color: #999;
+            margin-top: 6px;
+        }
+
+        /* Info boxes */
+        .info-box {
+            background: #e7f3ff;
+            border: 1px solid #b3d7ff;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .info-box.warning {
+            background: #fff3e0;
+            border-color: #ffcc80;
+        }
+
+        .info-box.critical {
+            background: #ffebee;
+            border-color: #ffcdd2;
+        }
+
+        .info-box.strategy-reminder {
+            background: #f3e5f5;
+            border-color: #ce93d8;
+        }
+
+        .info-box h4 {
+            color: var(--bumble-dark);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Definitions tooltip */
+        .term {
+            border-bottom: 1px dotted #666;
+            cursor: help;
+            position: relative;
+        }
+
+        .term:hover::after {
+            content: attr(data-definition);
+            position: absolute;
+            bottom: 100%;
+            left: 0;
+            background: var(--bumble-dark);
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            width: 250px;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        /* Strategic Options */
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .option-card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 16px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .option-card:hover {
+            border-color: var(--bumble-yellow);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .option-card.selected {
+            border-color: var(--bumble-yellow);
+            background: linear-gradient(135deg, #fffef5 0%, #fff9e6 100%);
+        }
+
+        .option-card.selected::after {
+            content: '✓';
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: var(--bumble-yellow);
+            color: var(--bumble-dark);
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .option-icon {
+            font-size: 2.5rem;
+            margin-bottom: 12px;
+        }
+
+        .option-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--bumble-dark);
+            margin-bottom: 8px;
+        }
+
+        .option-desc {
+            color: #666;
+            font-size: 0.95rem;
+            margin-bottom: 15px;
+        }
+
+        .option-tradeoff {
+            background: #fff3e0;
+            border-radius: 8px;
+            padding: 10px 12px;
+            font-size: 0.85rem;
+            color: #e65100;
+            margin-bottom: 12px;
+        }
+
+        .option-example {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 10px 12px;
+            font-size: 0.85rem;
+            color: #555;
+        }
+
+        .option-example strong {
+            color: var(--bumble-dark);
+        }
+
+        /* Data tables */
+        .data-section {
+            margin: 25px 0;
+        }
+
+        .data-section h3 {
+            color: var(--bumble-dark);
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .data-table th {
+            background: var(--bumble-dark);
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .data-table td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .data-table tr:hover td {
+            background: #f8f9fa;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .badge.high { background: #c8e6c9; color: #2e7d32; }
+        .badge.medium { background: #fff3e0; color: #e65100; }
+        .badge.low { background: #ffcdd2; color: #c62828; }
+        .badge.parity { background: #e3f2fd; color: #1565c0; }
+
+        /* Strategy Canvas */
+        .canvas-container {
+            margin: 20px 0;
+        }
+
+        .chart-wrapper {
+            background: #fafafa;
+            border-radius: 12px;
+            padding: 20px 15px 15px 15px;
+            margin-bottom: 20px;
+            min-height: 350px;
+        }
+
+        .chart-note {
+            font-size: 0.8rem;
+            color: #888;
+            text-align: center;
+            margin-top: 10px;
+            font-style: italic;
+        }
+
+        .factor-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .factor-control {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 15px;
+        }
+
+        .factor-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .factor-name {
+            font-weight: 600;
+            color: var(--bumble-dark);
+            font-size: 0.95rem;
+        }
+
+        .factor-value {
+            background: var(--bumble-yellow);
+            color: var(--bumble-dark);
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .factor-slider {
+            width: 100%;
+            height: 8px;
+            -webkit-appearance: none;
+            background: #e0e0e0;
+            border-radius: 4px;
+            outline: none;
+        }
+
+        .factor-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 22px;
+            height: 22px;
+            background: var(--bumble-yellow);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+
+        .factor-hint {
+            font-size: 0.8rem;
+            color: #888;
+            margin-top: 8px;
+        }
+
+        /* VRIO Section */
+        .vrio-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .vrio-column {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .vrio-letter {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--bumble-dark);
+        }
+
+        .vrio-label {
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .vrio-question {
+            font-size: 0.8rem;
+            color: #888;
+            font-style: italic;
+        }
+
+        .vrio-btn-group {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .vrio-btn {
+            padding: 8px 16px;
+            border: 2px solid #ddd;
+            background: white;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+
+        .vrio-btn:hover {
+            border-color: var(--bumble-yellow);
+        }
+
+        .vrio-btn.selected-yes {
+            background: #c8e6c9;
+            border-color: #4caf50;
+            color: #2e7d32;
+        }
+
+        .vrio-btn.selected-no {
+            background: #ffcdd2;
+            border-color: #f44336;
+            color: #c62828;
+        }
+
+        .vrio-btn.selected-partial {
+            background: #fff3e0;
+            border-color: #ff9800;
+            color: #e65100;
+        }
+
+        .vrio-result {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .vrio-result.competitive-parity {
+            background: #e3f2fd;
+            border: 2px solid #2196f3;
+        }
+
+        .vrio-result.temporary-advantage {
+            background: #fff3e0;
+            border: 2px solid #ff9800;
+        }
+
+        .vrio-result.sustained-advantage {
+            background: #c8e6c9;
+            border: 2px solid #4caf50;
+        }
+
+        .vrio-result.disadvantage {
+            background: #ffebee;
+            border: 2px solid #f44336;
+        }
+
+        .vrio-result.unrealised {
+            background: #f3e5f5;
+            border: 2px solid #9c27b0;
+        }
+
+        /* Resource Analysis */
+        .resource-card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 18px;
+            margin: 15px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .resource-card:hover {
+            border-color: var(--bumble-yellow);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .resource-card.selected {
+            border-color: var(--bumble-yellow);
+            background: linear-gradient(135deg, #fffef5 0%, #fff9e6 100%);
+        }
+
+        .resource-card.evaluated {
+            border-color: var(--success-green);
+        }
+
+        .resource-card.evaluated .resource-name::after {
+            content: ' ✓ Evaluated';
+            color: var(--success-green);
+            font-size: 0.8rem;
+            font-weight: normal;
+            margin-left: 10px;
+        }
+
+        .resource-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .resource-name {
+            font-weight: bold;
+            color: var(--bumble-dark);
+        }
+
+        .resource-detail {
+            font-size: 0.9rem;
+            color: #555;
+            line-height: 1.5;
+        }
+
+        .vrio-section {
+            margin-top: 25px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            display: none;
+        }
+
+        .vrio-section.active {
+            display: block;
+        }
+
+        .vrio-section-header {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--bumble-dark);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .resource-select-prompt {
+            text-align: center;
+            padding: 30px;
+            background: #f3e5f5;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+
+        .resource-select-prompt p {
+            color: #666;
+            font-size: 1rem;
+        }
+
+        /* External Links */
+        .links-section {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 18px;
+            margin: 20px 0;
+        }
+
+        .links-section h4 {
+            color: var(--bumble-dark);
+            margin-bottom: 12px;
+            font-size: 1rem;
+        }
+
+        .links-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 10px;
+        }
+
+        .ext-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 14px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            color: #0066cc;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .ext-link:hover {
+            background: #e7f3ff;
+            border-color: #0066cc;
+        }
+
+        /* Navigation */
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 2px solid #eee;
+        }
+
+        .btn {
+            padding: 12px 28px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: var(--bumble-yellow);
+            color: var(--bumble-dark);
+        }
+
+        .btn-primary:hover {
+            background: #e6b000;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Progress bar */
+        .progress-bar {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 25px;
+        }
+
+        .progress-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ddd;
+            transition: all 0.3s;
+        }
+
+        .progress-dot.active {
+            background: var(--bumble-yellow);
+            transform: scale(1.2);
+        }
+
+        .progress-dot.completed {
+            background: var(--success-green);
+        }
+
+        /* Summary */
+        .summary-section {
+            background: linear-gradient(135deg, #fff9e6 0%, #fff 100%);
+            border: 2px solid var(--bumble-yellow);
+            border-radius: 16px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+
+        .summary-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .summary-strategy {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--bumble-dark);
+        }
+
+        .canvas-summary {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+
+        .canvas-stat {
+            text-align: center;
+        }
+
+        .canvas-stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--bumble-dark);
+        }
+
+        .canvas-stat-label {
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        /* Discussion prompt */
+        .discussion-prompt {
+            background: #fff;
+            border: 2px dashed #ddd;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .discussion-prompt h4 {
+            color: var(--bumble-dark);
+            margin-bottom: 12px;
+        }
+
+        .discussion-prompt ul {
+            margin-left: 20px;
+            color: #555;
+        }
+
+        .discussion-prompt li {
+            margin: 8px 0;
+        }
+
+        /* Competitor legend */
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin: 15px 0;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 4px;
+            border-radius: 2px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 { font-size: 1.5rem; }
+            .screen { padding: 20px; }
+            .options-grid { grid-template-columns: 1fr; }
+            .vrio-grid { grid-template-columns: repeat(2, 1fr); }
+            .crisis-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🐝 Bumble's Strategic Crossroads</h1>
+            <p class="subtitle">Strategy Canvas & VRIO Analysis Lab | Week 8: Competitive Advantage</p>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-dot active" data-screen="1"></div>
+            <div class="progress-dot" data-screen="2"></div>
+            <div class="progress-dot" data-screen="3"></div>
+            <div class="progress-dot" data-screen="4"></div>
+            <div class="progress-dot" data-screen="5"></div>
+        </div>
+
+        <!-- SCREEN 1: The Crisis Briefing -->
+        <div class="screen active" id="screen1">
+            <div class="screen-header">
+                <div class="screen-number">1</div>
+                <h2 class="screen-title">The Crisis Briefing</h2>
+                <span class="time-badge">⏱️ 3 minutes</span>
+            </div>
+
+            <div class="info-box critical">
+                <h4>📉 November 2025: You've Been Called to an Emergency Board Meeting</h4>
+                <p>As strategic consultants, you've been asked to advise Bumble's leadership on their next move. The company that pioneered "women make the first move" is facing an existential crisis.</p>
+            </div>
+
+            <div class="crisis-grid">
+                <div class="crisis-stat negative">
+                    <div class="stat-value">-93%</div>
+                    <div class="stat-label">Stock Price Since IPO</div>
+                    <div class="stat-detail">From $75 (Feb 2021) to ~$5 (Nov 2025)</div>
+                </div>
+                <div class="crisis-stat negative">
+                    <div class="stat-value">-8.7%</div>
+                    <div class="stat-label">Paying Users (Year-on-Year)</div>
+                    <div class="stat-detail">Q2 2025: Down to 3.8 million globally</div>
+                </div>
+                <div class="crisis-stat negative">
+                    <div class="stat-value">-18%</div>
+                    <div class="stat-label">UK Users Since 2023</div>
+                    <div class="stat-detail">Now 1.44M vs Hinge's 1.51M</div>
+                </div>
+                <div class="crisis-stat neutral">
+                    <div class="stat-value">30%</div>
+                    <div class="stat-label">Staff Laid Off (2024)</div>
+                    <div class="stat-detail">Major cost-cutting underway</div>
+                </div>
+            </div>
+
+            <div class="info-box warning">
+                <h4>⚠️ The Core Problem: Bumble Abandoned Its Differentiator</h4>
+                <p>In April 2024, Bumble introduced "Opening Moves" — allowing men to initiate conversations. The company said women felt "burdened" by having to message first. But this was the feature that made Bumble <em>different</em> from Tinder.</p>
+                <p style="margin-top: 10px; font-weight: bold;">The strategic question: Without "women message first," what makes Bumble different from Tinder?</p>
+            </div>
+
+            <div class="data-section">
+                <h3>📊 UK Dating App Market (2024-2025)</h3>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>App</th>
+                            <th>UK Users</th>
+                            <th>Trend (2025)</th>
+                            <th>Positioning</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Tinder</strong></td>
+                            <td>2.49M</td>
+                            <td>Declining</td>
+                            <td>Volume, casual dating</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Hinge</strong></td>
+                            <td>1.51M</td>
+                            <td style="color: green;">+27% revenue growth</td>
+                            <td>"Designed to be deleted"</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Bumble</strong></td>
+                            <td>1.44M</td>
+                            <td style="color: red;">Declining</td>
+                            <td>??? (formerly: women-first)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="links-section">
+                <h4>📚 Background Resources</h4>
+                <div class="links-grid">
+                    <a href="https://www.google.com/finance/quote/BMBL:NASDAQ?hl=en&window=5Y" target="_blank" class="ext-link">📈 Bumble Stock (5-Year Chart)</a>
+                    <a href="https://www.businessofapps.com/data/bumble-statistics/" target="_blank" class="ext-link">📊 Bumble Statistics (2025)</a>
+                    <a href="https://www.businessofapps.com/data/tinder-statistics/" target="_blank" class="ext-link">📊 Tinder Statistics (2025)</a>
+                    <a href="https://www.businessofapps.com/data/hinge-statistics/" target="_blank" class="ext-link">📊 Hinge Statistics (2025)</a>
+                </div>
+            </div>
+
+            <div class="nav-buttons">
+                <div></div>
+                <button class="btn btn-primary" onclick="nextScreen()">Explore Strategic Options →</button>
+            </div>
+        </div>
+
+        <!-- SCREEN 2: Strategic Options -->
+        <div class="screen" id="screen2">
+            <div class="screen-header">
+                <div class="screen-number">2</div>
+                <h2 class="screen-title">Choose Your Strategic Direction</h2>
+                <span class="time-badge">⏱️ 3 minutes</span>
+            </div>
+
+            <p style="margin-bottom: 20px; color: #555;">Bumble's board is considering three strategic paths. <strong>Select ONE option</strong> that you will develop and defend. Each path requires Bumble to make difficult trade-offs — remember, strategy is about choosing what <em>not</em> to do.</p>
+
+            <div class="options-grid">
+                <div class="option-card" onclick="selectOption(1)" id="option1">
+                    <div class="option-icon">🧠</div>
+                    <div class="option-title">AI-Powered Smart Matchmaking</div>
+                    <div class="option-desc">Reposition as "the world's smartest matchmaker" — using insights from leading couples therapists and psychologists to create deeper compatibility matching. <strong>Completely abandon the women-first positioning</strong> to compete directly with Hinge on matching quality.</div>
+                    <div class="option-tradeoff">
+                        <strong>Key trade-off:</strong> Give up the distinctive women-first brand to compete head-to-head with Hinge's AI capabilities.
+                    </div>
+                    <div class="option-example">
+                        <strong>What this would mean:</strong> Bumble would invest heavily in AI R&D, partner with relationship experts, and relaunch as a premium matching service — no longer defined by who messages first.
+                    </div>
+                </div>
+
+                <div class="option-card" onclick="selectOption(2)" id="option2">
+                    <div class="option-icon">🎉</div>
+                    <div class="option-title">In-Person Events & Community</div>
+                    <div class="option-desc">Pivot from app-based dating to organising real-world singles events and community groups. Help people "get off the app and into the world." Become a connection company that happens to have an app.</div>
+                    <div class="option-tradeoff">
+                        <strong>Key trade-off:</strong> Events require physical infrastructure in every city — fundamentally different economics from a scalable app business.
+                    </div>
+                    <div class="option-example">
+                        <strong>What this would mean:</strong> Bumble would build out event operations globally, acquire community platforms, and create spaces for singles to meet face-to-face.
+                    </div>
+                </div>
+
+                <div class="option-card" onclick="selectOption(3)" id="option3">
+                    <div class="option-icon">🛡️</div>
+                    <div class="option-title">Safety & Trust Leadership</div>
+                    <div class="option-desc">Rebuild differentiation around being the safest, most trustworthy dating platform. Lead industry standards for verification, AI moderation, and protection — especially for women.</div>
+                    <div class="option-tradeoff">
+                        <strong>Key trade-off:</strong> Safety features are increasingly being copied by competitors. Can Bumble stay ahead in a "safety arms race"?
+                    </div>
+                    <div class="option-example">
+                        <strong>What this would mean:</strong> Bumble would invest in cutting-edge verification technology, stricter moderation, and position safety as its core brand promise.
+                    </div>
+                </div>
+            </div>
+
+            <div class="data-section">
+                <h3>📊 Market Context: Why These Options Matter</h3>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Trend</th>
+                            <th>Data Point (2024-2025)</th>
+                            <th>Strategic Implication</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>App Fatigue</td>
+                            <td>65% of dating apps deleted within 1 month</td>
+                            <td>Traditional swipe model is failing</td>
+                        </tr>
+                        <tr>
+                            <td>Gen Z Preferences</td>
+                            <td>90% prefer meeting through social gatherings</td>
+                            <td>Demand for offline/in-person options</td>
+                        </tr>
+                        <tr>
+                            <td>Safety Concerns</td>
+                            <td>62% of users cite safety as key factor</td>
+                            <td>Trust is a competitive differentiator</td>
+                        </tr>
+                        <tr>
+                            <td>Matching Quality</td>
+                            <td>78% of matches never go beyond 3 messages</td>
+                            <td>Better compatibility algorithms needed</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" onclick="prevScreen()">← Back</button>
+                <button class="btn btn-primary" onclick="nextScreen()" id="nextBtn2" disabled>Build Your Strategy Canvas →</button>
+            </div>
+        </div>
+
+        <!-- SCREEN 3: Strategy Canvas -->
+        <div class="screen" id="screen3">
+            <div class="screen-header">
+                <div class="screen-number">3</div>
+                <h2 class="screen-title">Build Bumble's New <span class="term" data-definition="A Strategy Canvas shows how competitors compare across key competitive factors. It helps visualise where to compete differently — and where to accept being weaker.">Strategy Canvas</span></h2>
+                <span class="time-badge">⏱️ 8 minutes</span>
+            </div>
+
+            <div class="info-box">
+                <h4>🎯 Your Task: Design Bumble's New Value Curve</h4>
+                <p>The chart shows where Tinder, current Bumble, and Hinge compete today. <strong>Use the sliders to set where Bumble SHOULD compete</strong> with your chosen strategy. Your target curve (gold dashed line) will appear as you adjust.</p>
+            </div>
+
+            <div class="info-box strategy-reminder">
+                <h4>⚖️ Remember: Strategy Is About Trade-offs</h4>
+                <p><strong>Don't just move everything up!</strong> Real strategy requires choosing where to invest AND where to accept being weaker. If you try to be excellent at everything, you'll be distinctive at nothing. Ask yourself: What will Bumble do <em>less</em> of to fund doing something else <em>more</em>?</p>
+            </div>
+
+            <div id="strategyDescription" class="info-box warning" style="display:none;"></div>
+
+            <div class="canvas-container">
+                <div class="chart-wrapper">
+                    <canvas id="strategyCanvas"></canvas>
+                    <p class="chart-note">Note: Current positions are illustrative estimates for teaching purposes, based on publicly available market data and positioning statements.</p>
+                </div>
+                <div class="legend">
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #FE3C72;"></div>
+                        <span>Tinder</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #FFC629;"></div>
+                        <span>Bumble (Current)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #5C5C5C;"></div>
+                        <span>Hinge</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #FFD700; height: 4px; border: 2px dashed #333;"></div>
+                        <span>Bumble (Your Target)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="factor-controls" id="factorControls">
+                <!-- Populated by JavaScript -->
+            </div>
+
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" onclick="prevScreen()">← Back</button>
+                <button class="btn btn-primary" onclick="nextScreen()">Analyse with VRIO →</button>
+            </div>
+        </div>
+
+        <!-- SCREEN 4: VRIO Analysis -->
+        <div class="screen" id="screen4">
+            <div class="screen-header">
+                <div class="screen-number">4</div>
+                <h2 class="screen-title"><span class="term" data-definition="VRIO is a framework to evaluate if a resource can provide sustainable competitive advantage. It asks: Is the resource Valuable, Rare, costly to Imitate, and is the firm Organised to exploit it?">VRIO</span> Reality Check</h2>
+                <span class="time-badge">⏱️ 5 minutes</span>
+            </div>
+
+            <div class="info-box">
+                <h4>🔍 Can Bumble Actually Defend This Position?</h4>
+                <p>Your Strategy Canvas shows WHERE you want Bumble to compete. VRIO analysis asks: does Bumble have (or can it build) the <strong>specific resources</strong> to protect this position from competitors?</p>
+                <p style="margin-top: 10px;"><strong>Important:</strong> VRIO should be applied to <em>individual resources</em>, not to strategies or bundles of resources. Below are two specific resources that would be critical for your chosen strategy. <strong>Click on each resource</strong> to evaluate it using the VRIO criteria.</p>
+            </div>
+
+            <div id="resourceAnalysis">
+                <!-- Populated based on selected option -->
+            </div>
+
+            <div id="resourceSelectPrompt" class="resource-select-prompt">
+                <p>👆 <strong>Click on a resource above</strong> to begin your VRIO analysis</p>
+            </div>
+
+            <!-- VRIO Section for Resource A -->
+            <div id="vrioSectionA" class="vrio-section">
+                <div class="vrio-section-header">📊 VRIO Analysis: <span id="resourceALabel">Resource A</span></div>
+                <div class="vrio-grid">
+                    <div class="vrio-column">
+                        <div class="vrio-letter">V</div>
+                        <div class="vrio-label">Valuable</div>
+                        <div class="vrio-question">Does it help win customers or reduce costs?</div>
+                        <div class="vrio-btn-group">
+                            <button class="vrio-btn" onclick="setVrio('A', 'v', 'yes', this)">Yes</button>
+                            <button class="vrio-btn" onclick="setVrio('A', 'v', 'no', this)">No</button>
+                        </div>
+                    </div>
+                    <div class="vrio-column">
+                        <div class="vrio-letter">R</div>
+                        <div class="vrio-label">Rare</div>
+                        <div class="vrio-question">Do few competitors have this resource?</div>
+                        <div class="vrio-btn-group">
+                            <button class="vrio-btn" onclick="setVrio('A', 'r', 'yes', this)">Yes</button>
+                            <button class="vrio-btn" onclick="setVrio('A', 'r', 'partial', this)">Partially</button>
+                            <button class="vrio-btn" onclick="setVrio('A', 'r', 'no', this)">No</button>
+                        </div>
+                    </div>
+                    <div class="vrio-column">
+                        <div class="vrio-letter">I</div>
+                        <div class="vrio-label">Costly to Imitate</div>
+                        <div class="vrio-question">Would it be hard/expensive for rivals to copy?</div>
+                        <div class="vrio-btn-group">
+                            <button class="vrio-btn" onclick="setVrio('A', 'i', 'yes', this)">Yes</button>
+                            <button class="vrio-btn" onclick="setVrio('A', 'i', 'partial', this)">Partially</button>
+                            <button class="vrio-btn" onclick="setVrio('A', 'i', 'no', this)">No</button>
+                        </div>
+                    </div>
+                    <div class="vrio-column">
+                        <div class="vrio-letter">O</div>
+                        <div class="vrio-label">Organised</div>
+                        <div class="vrio-question">Is Bumble set up to exploit this resource?</div>
+                        <div class="vrio-btn-group">
+                            <button class="vrio-btn" onclick="setVrio('A', 'o', 'yes', this)">Yes</button>
+                            <button class="vrio-btn" onclick="setVrio('A', 'o', 'partial', this)">Partially</button>
+                            <button class="vrio-btn" onclick="setVrio('A', 'o', 'no', this)">No</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="vrioResultA" class="vrio-result" style="display:none;"></div>
+            </div>
+
+            <!-- VRIO Section for Resource B -->
+            <div id="vrioSectionB" class="vrio-section">
+                <div class="vrio-section-header">📊 VRIO Analysis: <span id="resourceBLabel">Resource B</span></div>
+                <div class="vrio-grid">
+                    <div class="vrio-column">
+                        <div class="vrio-letter">V</div>
+                        <div class="vrio-label">Valuable</div>
+                        <div class="vrio-question">Does it help win customers or reduce costs?</div>
+                        <div class="vrio-btn-group">
+                            <button class="vrio-btn" onclick="setVrio('B', 'v', 'yes', this)">Yes</button>
+                            <button class="vrio-btn" onclick="setVrio('B', 'v', 'no', this)">No</button>
+                        </div>
+                    </div>
+                    <div class="vrio-column">
+                        <div class="vrio-letter">R</div>
+                        <div class="vrio-label">Rare</div>
+                        <div class="vrio-question">Do few competitors have this resource?</div>
+                        <div class="vrio-btn-group">
+                            <button class="vrio-btn" onclick="setVrio('B', 'r', 'yes', this)">Yes</button>
+                            <button class="vrio-btn" onclick="setVrio('B', 'r', 'partial', this)">Partially</button>
+                            <button class="vrio-btn" onclick="setVrio('B', 'r', 'no', this)">No</button>
+                        </div>
+                    </div>
+                    <div class="vrio-column">
+                        <div class="vrio-letter">I</div>
+                        <div class="vrio-label">Costly to Imitate</div>
+                        <div class="vrio-question">Would it be hard/expensive for rivals to copy?</div>
+                        <div class="vrio-btn-group">
+                            <button class="vrio-btn" onclick="setVrio('B', 'i', 'yes', this)">Yes</button>
+                            <button class="vrio-btn" onclick="setVrio('B', 'i', 'partial', this)">Partially</button>
+                            <button class="vrio-btn" onclick="setVrio('B', 'i', 'no', this)">No</button>
+                        </div>
+                    </div>
+                    <div class="vrio-column">
+                        <div class="vrio-letter">O</div>
+                        <div class="vrio-label">Organised</div>
+                        <div class="vrio-question">Is Bumble set up to exploit this resource?</div>
+                        <div class="vrio-btn-group">
+                            <button class="vrio-btn" onclick="setVrio('B', 'o', 'yes', this)">Yes</button>
+                            <button class="vrio-btn" onclick="setVrio('B', 'o', 'partial', this)">Partially</button>
+                            <button class="vrio-btn" onclick="setVrio('B', 'o', 'no', this)">No</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="vrioResultB" class="vrio-result" style="display:none;"></div>
+            </div>
+
+            <div id="competitorComparison" class="data-section">
+                <!-- Populated based on selected option -->
+            </div>
+
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" onclick="prevScreen()">← Back</button>
+                <button class="btn btn-primary" onclick="nextScreen()">View Summary →</button>
+            </div>
+        </div>
+
+        <!-- SCREEN 5: Summary & Discussion -->
+        <div class="screen" id="screen5">
+            <div class="screen-header">
+                <div class="screen-number">5</div>
+                <h2 class="screen-title">Your Strategic Recommendation</h2>
+                <span class="time-badge">⏱️ 2 minutes</span>
+            </div>
+
+            <div class="summary-section" id="summaryContent">
+                <!-- Populated by JavaScript -->
+            </div>
+
+            <div class="discussion-prompt">
+                <h4>🤔 Reflect Before You Commit to This Strategy</h4>
+                <ul id="discussionQuestions">
+                    <!-- Populated based on analysis -->
+                </ul>
+            </div>
+
+            <div class="links-section">
+                <h4>📚 Further Reading</h4>
+                <div class="links-grid">
+                    <a href="https://techcrunch.com/2024/05/20/bumble-buys-community-building-app-geneva-to-expand-further-into-friendships/" target="_blank" class="ext-link">📰 Bumble's Geneva Acquisition</a>
+                    <a href="https://www.ted.com/pages/the-future-of-finding-love-with-bumble-ceo-whitney-wolfe-herd-transcript" target="_blank" class="ext-link">🎙️ Whitney Wolfe Herd on AI Dating</a>
+                    <a href="https://hinge.co/ai-principles" target="_blank" class="ext-link">🤖 Hinge AI Principles</a>
+                    <a href="https://www.constellationr.com/blog-news/insights/matchs-big-generative-ai-plans-revolve-around-tinder-hinge-alleviating-dating" target="_blank" class="ext-link">📊 Match Group AI Strategy</a>
+                </div>
+            </div>
+
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" onclick="prevScreen()">← Back</button>
+                <button class="btn btn-primary" onclick="resetTool()">🔄 Start Over</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // State management
+        let currentScreen = 1;
+        let selectedOption = null;
+        let selectedResource = null; // 'A' or 'B' or null
+        let vrioAnswersA = { v: null, r: null, i: null, o: null };
+        let vrioAnswersB = { v: null, r: null, i: null, o: null };
+        let targetValues = {};
+        let chart = null;
+
+        // Competitive factor definitions - updated labels
+        const factors = [
+            { 
+                id: 'price', 
+                name: 'Affordability', 
+                hint: 'How competitively priced is the service? (5 = very affordable)',
+                tinder: 3, bumble: 3, hinge: 2 
+            },
+            { 
+                id: 'safety', 
+                name: 'Safety & Trust', 
+                hint: 'Verification, moderation, anti-harassment tools (5 = industry leading)',
+                tinder: 2, bumble: 3, hinge: 3 
+            },
+            { 
+                id: 'serious', 
+                name: 'Relationship Focus', 
+                hint: 'How well does it serve people seeking committed relationships? (5 = strongly focused)',
+                tinder: 2, bumble: 3, hinge: 5 
+            },
+            { 
+                id: 'userbase', 
+                name: 'User Base (UK)', 
+                hint: 'Size of active user pool — more users = more potential matches (5 = largest)',
+                tinder: 5, bumble: 3, hinge: 4 
+            },
+            { 
+                id: 'algorithm', 
+                name: 'Matching Quality', 
+                hint: 'Sophistication of matching algorithm and compatibility prediction (5 = most advanced)',
+                tinder: 3, bumble: 3, hinge: 5 
+            },
+            { 
+                id: 'brand', 
+                name: 'Brand Recognition', 
+                hint: 'Overall brand awareness and reputation in the market (5 = very well known)',
+                tinder: 5, bumble: 4, hinge: 4 
+            },
+            { 
+                id: 'empowerment', 
+                name: 'Women-First Design', 
+                hint: 'Features specifically designed for women\'s safety, control, and empowerment (5 = strong focus)',
+                tinder: 1, bumble: 3, hinge: 2 
+            },
+            { 
+                id: 'offline', 
+                name: 'In-Person Events', 
+                hint: 'Events, meetups, community features for meeting offline (5 = strong offline presence)',
+                tinder: 2, bumble: 2, hinge: 1 
+            }
+        ];
+
+        // Strategy-specific data
+        const strategyData = {
+            1: {
+                name: 'AI-Powered Smart Matchmaking',
+                description: 'Completely reposition Bumble as "the world\'s smartest matchmaker" — abandoning the women-first positioning to compete directly with Hinge on AI-driven compatibility.',
+                keyResource: 'Either (A) AI & Data Science Capability or (B) Relationship Science Expertise',
+                resourceAName: 'AI & Data Science Capability',
+                resourceBName: 'Relationship Science Expertise',
+                resourceDetail: `
+                    <div class="resource-card" id="resourceCardA" onclick="selectResource('A')">
+                        <div class="resource-header">
+                            <span class="resource-name">📌 Resource A: AI & Data Science Capability</span>
+                        </div>
+                        <div class="resource-detail">
+                            <p><strong>What this means:</strong> The technical infrastructure, algorithms, and engineering talent needed to build sophisticated matching systems — plus the user data to train them.</p>
+                            <p style="margin-top: 10px;"><strong>Bumble's current position:</strong> Bumble has ~$60M R&D budget and 3.8M paying users generating data. Match Group (Hinge/Tinder) has $350M R&D and 24M+ paying users — approximately 7× more training data.</p>
+                            <p style="margin-top: 10px; color: #666; font-size: 0.85rem;"><em>Click to evaluate this resource with VRIO →</em></p>
+                        </div>
+                    </div>
+                    <div class="resource-card" id="resourceCardB" onclick="selectResource('B')">
+                        <div class="resource-header">
+                            <span class="resource-name">📌 Resource B: Relationship Science Expertise</span>
+                        </div>
+                        <div class="resource-detail">
+                            <p><strong>What this means:</strong> Partnerships with couples therapists, psychologists, and relationship researchers who can design scientifically-grounded compatibility frameworks.</p>
+                            <p style="margin-top: 10px;"><strong>Bumble's current position:</strong> Bumble has announced plans to work with psychology experts for their new app. However, this expertise can be hired or partnered with — it's not proprietary to any one company.</p>
+                            <p style="margin-top: 10px; color: #666; font-size: 0.85rem;"><em>Click to evaluate this resource with VRIO →</em></p>
+                        </div>
+                    </div>
+                `,
+                competitorTable: `
+                    <h3>📊 AI Development Comparison (2025)</h3>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Company</th>
+                                <th>AI Investment</th>
+                                <th>Key AI Features</th>
+                                <th>Data Advantage</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Match Group (Hinge/Tinder)</strong></td>
+                                <td>$20-30M AI spend in 2024; $350M total R&D</td>
+                                <td>Gale-Shapley algorithm (since 2018), "Most Compatible" feature, OpenAI partnership</td>
+                                <td><span class="badge high">High</span> 24M+ paying users across apps</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Bumble</strong></td>
+                                <td>~$60M total R&D (2022); AI-specific investment unclear</td>
+                                <td>Psychology-based app announced (beta late 2025)</td>
+                                <td><span class="badge medium">Medium</span> 3.8M paying users</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p style="margin-top: 15px; font-size: 0.9rem; color: #666;"><strong>Key Question:</strong> Can Bumble build AI matching capabilities that are <em>better than</em> Hinge's before running out of resources? Match Group has ~7× more users generating training data for their algorithms.</p>
+                `,
+                recommendedValues: { price: 2, safety: 3, serious: 5, userbase: 3, algorithm: 5, brand: 3, empowerment: 1, offline: 1 },
+                discussionQuestions: [
+                    "Hinge has been developing AI matching since 2018. Can Bumble realistically catch up with a later start and fewer resources?",
+                    "Match Group has approximately 7× more users generating data. Is data volume essential for AI matching quality, or can psychology-based approaches work with less data?",
+                    "If AI matching becomes a 'table stakes' feature that everyone has, what else would differentiate Bumble?",
+                    "Is abandoning the women-first positioning worth it to compete on AI? What does Bumble lose in the process?",
+                    "Whitney Wolfe Herd has talked about AI 'concierges' that date on your behalf. Would users actually want this?"
+                ]
+            },
+            2: {
+                name: 'In-Person Events & Community',
+                description: 'Pivot from app-based dating to organising real-world events and community groups. Become a "connection company" that helps people meet face-to-face.',
+                keyResource: 'Either (A) Event Operations Infrastructure or (B) Trusted "Safe Space" Brand',
+                resourceAName: 'Event Operations Infrastructure',
+                resourceBName: 'Trusted "Safe Space" Brand',
+                resourceDetail: `
+                    <div class="resource-card" id="resourceCardA" onclick="selectResource('A')">
+                        <div class="resource-header">
+                            <span class="resource-name">📌 Resource A: Event Operations Infrastructure</span>
+                        </div>
+                        <div class="resource-detail">
+                            <p><strong>What this means:</strong> The venue partnerships, logistics capabilities, local staff, and operational systems needed to run singles events efficiently at scale across multiple cities.</p>
+                            <p style="margin-top: 10px;"><strong>Bumble's current position:</strong> Bumble has piloted "Bumble In Real Life" events in 10 US cities with partners like Live Nation, SoulCycle, and TopGolf. They acquired Geneva ($17M) for community features. However, this is still small-scale compared to dedicated events companies.</p>
+                            <p style="margin-top: 10px; color: #666; font-size: 0.85rem;"><em>Click to evaluate this resource with VRIO →</em></p>
+                        </div>
+                    </div>
+                    <div class="resource-card" id="resourceCardB" onclick="selectResource('B')">
+                        <div class="resource-header">
+                            <span class="resource-name">📌 Resource B: Trusted "Safe Space" Brand for Singles Events</span>
+                        </div>
+                        <div class="resource-detail">
+                            <p><strong>What this means:</strong> A reputation that makes singles — especially women — feel confident attending Bumble-branded events, trusting they'll be safe, respectful, and well-organised.</p>
+                            <p style="margin-top: 10px;"><strong>Bumble's current position:</strong> Bumble's women-first heritage and founding story give it authenticity in safety. CEO Whitney Wolfe Herd says: "It's much more about showing up to that Bumble pickleball thing... humans are designed to be in groups."</p>
+                            <p style="margin-top: 10px; color: #666; font-size: 0.85rem;"><em>Click to evaluate this resource with VRIO →</em></p>
+                        </div>
+                    </div>
+                `,
+                competitorTable: `
+                    <h3>📊 In-Person/Events Competitive Landscape (2025)</h3>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Player</th>
+                                <th>In-Person Capability</th>
+                                <th>Geographic Scale</th>
+                                <th>Brand Fit</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Bumble</strong></td>
+                                <td>Pilot events, Geneva platform, "Plans" feature</td>
+                                <td>10 US cities (limited UK presence)</td>
+                                <td><span class="badge high">High</span> Women-first = safe events</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Tinder</strong></td>
+                                <td>Festival Finder, singles mixers (testing)</td>
+                                <td>Testing phase</td>
+                                <td><span class="badge medium">Medium</span> Casual brand</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Hinge</strong></td>
+                                <td>Minimal — focused on app experience</td>
+                                <td>None</td>
+                                <td><span class="badge low">Low</span> "Designed to be deleted" = exit app</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Eventbrite / Meetup</strong></td>
+                                <td>Generic events platform (singles events up 43%)</td>
+                                <td>Global</td>
+                                <td><span class="badge parity">N/A</span> Not dating-specific</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p style="margin-top: 15px; font-size: 0.9rem; color: #666;"><strong>Key Question:</strong> Is events a <em>scalable</em> business model? Events require physical infrastructure, staff, and venue partnerships in every city — fundamentally different from the near-zero marginal cost of a dating app.</p>
+                `,
+                recommendedValues: { price: 3, safety: 4, serious: 4, userbase: 2, algorithm: 2, brand: 4, empowerment: 4, offline: 5 },
+                discussionQuestions: [
+                    "Events require physical infrastructure in every city. Can Bumble scale this globally, or will it always be limited to major markets?",
+                    "If in-person events are the future, why haven't Meetup or Eventbrite dominated dating? What would Bumble add that they can't?",
+                    "Does Bumble's 'women-first' brand translate to real-world events? How would you make singles events feel safe for women?",
+                    "Events have fundamentally different economics than apps. Is Bumble's team equipped to run a real-world events business?",
+                    "Could Bumble become a 'social club' with dating as just one feature? What are the risks of losing focus on dating?"
+                ]
+            },
+            3: {
+                name: 'Safety & Trust Leadership',
+                description: 'Rebuild differentiation around being the safest, most trustworthy dating platform. Lead industry standards for verification, AI moderation, and protection — especially for women.',
+                keyResource: 'Either (A) Safety Technology Systems or (B) Authentic Safety-First Brand Heritage',
+                resourceAName: 'Safety Technology Systems',
+                resourceBName: 'Authentic Safety-First Brand Heritage',
+                resourceDetail: `
+                    <div class="resource-card" id="resourceCardA" onclick="selectResource('A')">
+                        <div class="resource-header">
+                            <span class="resource-name">📌 Resource A: Safety Technology Systems</span>
+                        </div>
+                        <div class="resource-detail">
+                            <p><strong>What this means:</strong> The technical infrastructure for identity verification, AI-powered abuse detection, content moderation algorithms, and real-time threat monitoring.</p>
+                            <p style="margin-top: 10px;"><strong>Bumble's current position:</strong> Bumble has invested $12.3M+ in proprietary safety technology, employs 247 dedicated safety staff (8% of workforce), and pioneered photo verification. However, Match Group (Tinder/Hinge) now has similar capabilities across their apps.</p>
+                            <p style="margin-top: 10px; color: #666; font-size: 0.85rem;"><em>Click to evaluate this resource with VRIO →</em></p>
+                        </div>
+                    </div>
+                    <div class="resource-card" id="resourceCardB" onclick="selectResource('B')">
+                        <div class="resource-header">
+                            <span class="resource-name">📌 Resource B: Authentic Safety-First Brand Heritage</span>
+                        </div>
+                        <div class="resource-detail">
+                            <p><strong>What this means:</strong> The credibility and trust that comes from Bumble's founding story — Whitney Wolfe Herd left Tinder after experiencing harassment and built Bumble specifically to create a safer dating environment.</p>
+                            <p style="margin-top: 10px;"><strong>Bumble's current position:</strong> Wolfe Herd championed Texas legislation against unsolicited explicit images. Bumble's origin story is authentically about women's safety — this history cannot be replicated by competitors.</p>
+                            <p style="margin-top: 10px; color: #666; font-size: 0.85rem;"><em>Click to evaluate this resource with VRIO →</em></p>
+                        </div>
+                    </div>
+                `,
+                competitorTable: `
+                    <h3>📊 Safety & Trust Comparison (2025)</h3>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Feature</th>
+                                <th>Bumble</th>
+                                <th>Tinder</th>
+                                <th>Hinge</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Photo Verification</td>
+                                <td><span class="badge high">✓ Established (2016)</span></td>
+                                <td><span class="badge medium">✓ Added 2024</span></td>
+                                <td><span class="badge medium">✓ Available</span></td>
+                            </tr>
+                            <tr>
+                                <td>AI Content Moderation</td>
+                                <td><span class="badge high">✓ Proprietary system</span></td>
+                                <td><span class="badge parity">✓ Match Group shared</span></td>
+                                <td><span class="badge parity">✓ Match Group shared</span></td>
+                            </tr>
+                            <tr>
+                                <td>Dedicated Safety Staff</td>
+                                <td>247 (8% of workforce)</td>
+                                <td>Shared across Match Group</td>
+                                <td>Shared across Match Group</td>
+                            </tr>
+                            <tr>
+                                <td>Brand Association with Safety</td>
+                                <td><span class="badge high">Strong</span> (founding story)</td>
+                                <td><span class="badge low">Weak</span> (hookup culture)</td>
+                                <td><span class="badge medium">Medium</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p style="margin-top: 15px; font-size: 0.9rem; color: #666;"><strong>Key Question:</strong> Safety features are increasingly becoming "table stakes" — all major apps now have verification and moderation. Can Bumble stay meaningfully ahead, or will safety become expected everywhere?</p>
+                `,
+                recommendedValues: { price: 3, safety: 5, serious: 4, userbase: 3, algorithm: 3, brand: 4, empowerment: 5, offline: 2 },
+                discussionQuestions: [
+                    "Safety features are being copied by competitors. Can Bumble stay ahead in a 'safety arms race,' or will everyone eventually match them?",
+                    "62% of users say safety influences app choice. But would they actually pay MORE for a safer app?",
+                    "Bumble's founding story gives it authenticity on safety that competitors can't easily replicate. Is this a sustainable advantage?",
+                    "If safety becomes 'table stakes' (expected on all apps), what would be Bumble's next differentiator?",
+                    "Could focusing too much on safety make Bumble seem 'scary' — implying dating is dangerous? How do you balance safety messaging?"
+                ]
+            }
+        };
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeFactorControls();
+            initializeChart();
+        });
+
+        function initializeFactorControls() {
+            const container = document.getElementById('factorControls');
+            container.innerHTML = factors.map(f => `
+                <div class="factor-control">
+                    <div class="factor-header">
+                        <span class="factor-name">${f.name}</span>
+                        <span class="factor-value" id="value-${f.id}">${f.bumble}</span>
+                    </div>
+                    <input type="range" class="factor-slider" 
+                           id="slider-${f.id}" 
+                           min="1" max="5" step="1" 
+                           value="${f.bumble}"
+                           onchange="updateFactor('${f.id}', this.value)"
+                           oninput="updateFactor('${f.id}', this.value)">
+                    <div class="factor-hint">${f.hint}</div>
+                </div>
+            `).join('');
+            
+            // Initialize target values
+            factors.forEach(f => {
+                targetValues[f.id] = f.bumble;
+            });
+        }
+
+        function initializeChart() {
+            const ctx = document.getElementById('strategyCanvas').getContext('2d');
+            
+            chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: factors.map(f => f.name),
+                    datasets: [
+                        {
+                            label: 'Tinder',
+                            data: factors.map(f => f.tinder),
+                            borderColor: '#FE3C72',
+                            backgroundColor: 'rgba(254, 60, 114, 0.1)',
+                            borderWidth: 2,
+                            tension: 0.3,
+                            fill: false,
+                            pointRadius: 4
+                        },
+                        {
+                            label: 'Bumble (Current)',
+                            data: factors.map(f => f.bumble),
+                            borderColor: '#FFC629',
+                            backgroundColor: 'rgba(255, 198, 41, 0.1)',
+                            borderWidth: 2,
+                            tension: 0.3,
+                            fill: false,
+                            pointRadius: 4
+                        },
+                        {
+                            label: 'Hinge',
+                            data: factors.map(f => f.hinge),
+                            borderColor: '#5C5C5C',
+                            backgroundColor: 'rgba(92, 92, 92, 0.1)',
+                            borderWidth: 2,
+                            tension: 0.3,
+                            fill: false,
+                            pointRadius: 4
+                        },
+                        {
+                            label: 'Bumble (Your Target)',
+                            data: factors.map(f => f.bumble),
+                            borderColor: '#FFD700',
+                            backgroundColor: 'rgba(255, 215, 0, 0.2)',
+                            borderWidth: 4,
+                            borderDash: [10, 5],
+                            tension: 0.3,
+                            fill: false,
+                            pointRadius: 6
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    aspectRatio: 1.8,
+                    layout: {
+                        padding: {
+                            top: 15,
+                            bottom: 5,
+                            left: 10,
+                            right: 10
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            min: 0.5,
+                            max: 5.5,
+                            ticks: {
+                                stepSize: 1,
+                                callback: function(value) {
+                                    const labels = {1: 'Low', 2: 'Below Avg', 3: 'Average', 4: 'Above Avg', 5: 'High'};
+                                    return labels[value] || '';
+                                }
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                maxRotation: 35,
+                                minRotation: 35,
+                                font: {
+                                    size: 10
+                                },
+                                padding: 5
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const labels = {1: 'Low', 2: 'Below Avg', 3: 'Average', 4: 'Above Avg', 5: 'High'};
+                                    return context.dataset.label + ': ' + labels[context.raw];
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateFactor(id, value) {
+            targetValues[id] = parseInt(value);
+            document.getElementById(`value-${id}`).textContent = value;
+            
+            // Update chart
+            const targetData = factors.map(f => targetValues[f.id]);
+            chart.data.datasets[3].data = targetData;
+            chart.update();
+        }
+
+        function selectOption(optionNum) {
+            // Deselect all
+            document.querySelectorAll('.option-card').forEach(card => card.classList.remove('selected'));
+            
+            // Select this one
+            document.getElementById(`option${optionNum}`).classList.add('selected');
+            selectedOption = optionNum;
+            
+            // Enable next button
+            document.getElementById('nextBtn2').disabled = false;
+            
+            // Set recommended values for sliders
+            const data = strategyData[optionNum];
+            Object.keys(data.recommendedValues).forEach(id => {
+                const slider = document.getElementById(`slider-${id}`);
+                if (slider) {
+                    slider.value = data.recommendedValues[id];
+                    updateFactor(id, data.recommendedValues[id]);
+                }
+            });
+        }
+
+        function selectResource(resource) {
+            // Show the VRIO section for this resource
+            document.getElementById('resourceSelectPrompt').style.display = 'none';
+            document.getElementById(`vrioSection${resource}`).classList.add('active');
+            
+            // Update card selection styling
+            const cardA = document.getElementById('resourceCardA');
+            const cardB = document.getElementById('resourceCardB');
+            
+            if (resource === 'A') {
+                cardA.classList.add('selected');
+            } else {
+                cardB.classList.add('selected');
+            }
+            
+            // Set resource label in VRIO section
+            const data = strategyData[selectedOption];
+            if (resource === 'A') {
+                document.getElementById('resourceALabel').textContent = data.resourceAName;
+            } else {
+                document.getElementById('resourceBLabel').textContent = data.resourceBName;
+            }
+        }
+
+        function setVrio(resource, letter, value, btn) {
+            // Update state
+            if (resource === 'A') {
+                vrioAnswersA[letter] = value;
+            } else {
+                vrioAnswersB[letter] = value;
+            }
+            
+            // Update button styling
+            const parent = btn.parentElement;
+            parent.querySelectorAll('.vrio-btn').forEach(b => {
+                b.classList.remove('selected-yes', 'selected-no', 'selected-partial');
+            });
+            
+            if (value === 'yes') btn.classList.add('selected-yes');
+            else if (value === 'no') btn.classList.add('selected-no');
+            else if (value === 'partial') btn.classList.add('selected-partial');
+            
+            // Calculate and show result
+            calculateVrioResult(resource);
+        }
+
+        function calculateVrioResult(resource) {
+            const answers = resource === 'A' ? vrioAnswersA : vrioAnswersB;
+            const { v, r, i, o } = answers;
+            
+            // Need all answers
+            if (!v || !r || !i || !o) return;
+            
+            const resultDiv = document.getElementById(`vrioResult${resource}`);
+            resultDiv.style.display = 'block';
+            
+            // Mark card as evaluated
+            document.getElementById(`resourceCard${resource}`).classList.add('evaluated');
+            
+            let result = '';
+            let className = '';
+            
+            if (v === 'no') {
+                result = `<strong>⚠️ Competitive Disadvantage</strong><br>This resource isn't valuable — it doesn't help win customers or reduce costs. Investing in this resource may not improve Bumble's position.`;
+                className = 'disadvantage';
+            } else if (r === 'no') {
+                result = `<strong>📊 Competitive Parity</strong><br>This resource is valuable but not rare. Competitors have similar capabilities. This resource may help Bumble "keep up" but won't create meaningful differentiation.`;
+                className = 'competitive-parity';
+            } else if (o === 'no') {
+                result = `<strong>🔓 Unrealised Potential</strong><br>This resource could be valuable and somewhat defensible, but Bumble isn't currently organised to exploit it. Significant investment in capabilities, processes, or structure would be needed.`;
+                className = 'unrealised';
+            } else if ((r === 'partial' || i === 'partial') && o !== 'no') {
+                result = `<strong>⏳ Temporary Competitive Advantage</strong><br>This resource is valuable and Bumble has some capability, but competitors could potentially copy it. This gives Bumble a window of opportunity that may erode over time.`;
+                className = 'temporary-advantage';
+            } else if (i === 'no') {
+                result = `<strong>⏳ Temporary Competitive Advantage</strong><br>This resource is valuable and rare today, but competitors could copy it relatively easily. Bumble would need to keep innovating to stay ahead.`;
+                className = 'temporary-advantage';
+            } else if (o === 'partial') {
+                result = `<strong>🔓 Unrealised Potential</strong><br>Bumble has a potentially defensible resource, but isn't fully organised to exploit it. With investment in capabilities and processes, this could become a sustained advantage.`;
+                className = 'unrealised';
+            } else {
+                result = `<strong>🏆 Sustained Competitive Advantage</strong><br>This resource is valuable, rare, costly to imitate, AND Bumble is organised to exploit it. This could provide lasting differentiation — though "sustained" doesn't mean "forever."`;
+                className = 'sustained-advantage';
+            }
+            
+            resultDiv.innerHTML = result;
+            resultDiv.className = 'vrio-result ' + className;
+        }
+
+        function getVrioOutcome(answers) {
+            const { v, r, i, o } = answers;
+            
+            if (!v || !r || !i || !o) return { text: 'Not evaluated', class: '' };
+            
+            if (v === 'no') {
+                return { text: 'Competitive Disadvantage', class: 'color: #c62828;' };
+            } else if (r === 'no') {
+                return { text: 'Competitive Parity', class: 'color: #1565c0;' };
+            } else if (o === 'no') {
+                return { text: 'Unrealised Potential', class: 'color: #7b1fa2;' };
+            } else if (r === 'partial' || i === 'partial' || i === 'no') {
+                return { text: 'Temporary Advantage', class: 'color: #e65100;' };
+            } else if (o === 'partial') {
+                return { text: 'Unrealised Potential', class: 'color: #7b1fa2;' };
+            } else {
+                return { text: 'Sustained Advantage', class: 'color: #2e7d32;' };
+            }
+        }
+
+        function nextScreen() {
+            if (currentScreen === 2 && !selectedOption) return;
+            
+            // Update progress dots
+            document.querySelector(`.progress-dot[data-screen="${currentScreen}"]`).classList.remove('active');
+            document.querySelector(`.progress-dot[data-screen="${currentScreen}"]`).classList.add('completed');
+            
+            currentScreen++;
+            
+            document.querySelector(`.progress-dot[data-screen="${currentScreen}"]`).classList.add('active');
+            
+            // Hide all screens
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            
+            // Show current screen
+            document.getElementById(`screen${currentScreen}`).classList.add('active');
+            
+            // Populate content based on selection
+            if (currentScreen === 3) {
+                populateStrategyDescription();
+            } else if (currentScreen === 4) {
+                populateVrioContent();
+            } else if (currentScreen === 5) {
+                populateSummary();
+            }
+            
+            window.scrollTo(0, 0);
+        }
+
+        function prevScreen() {
+            // Update progress dots
+            document.querySelector(`.progress-dot[data-screen="${currentScreen}"]`).classList.remove('active');
+            
+            currentScreen--;
+            
+            document.querySelector(`.progress-dot[data-screen="${currentScreen}"]`).classList.remove('completed');
+            document.querySelector(`.progress-dot[data-screen="${currentScreen}"]`).classList.add('active');
+            
+            // Hide all screens
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            
+            // Show current screen
+            document.getElementById(`screen${currentScreen}`).classList.add('active');
+            
+            window.scrollTo(0, 0);
+        }
+
+        function populateStrategyDescription() {
+            const data = strategyData[selectedOption];
+            const descDiv = document.getElementById('strategyDescription');
+            descDiv.style.display = 'block';
+            descDiv.innerHTML = `<h4>📋 Your Strategy: ${data.name}</h4><p>${data.description}</p>`;
+        }
+
+        function populateVrioContent() {
+            const data = strategyData[selectedOption];
+            
+            document.getElementById('resourceAnalysis').innerHTML = `
+                <h3>🎯 Critical Resources for "${data.name}"</h3>
+                <p style="margin-bottom: 15px;">To defend this strategic position, Bumble would need strong resources. <strong>Click on each resource below</strong> to evaluate it with VRIO. You can evaluate one or both resources.</p>
+                ${data.resourceDetail}
+            `;
+            
+            document.getElementById('competitorComparison').innerHTML = data.competitorTable;
+            
+            // Reset VRIO sections
+            document.getElementById('resourceSelectPrompt').style.display = 'block';
+            document.getElementById('vrioSectionA').classList.remove('active');
+            document.getElementById('vrioSectionB').classList.remove('active');
+            
+            // Reset VRIO answers
+            vrioAnswersA = { v: null, r: null, i: null, o: null };
+            vrioAnswersB = { v: null, r: null, i: null, o: null };
+            
+            // Reset all VRIO buttons in both sections
+            document.querySelectorAll('#vrioSectionA .vrio-btn, #vrioSectionB .vrio-btn').forEach(btn => {
+                btn.classList.remove('selected-yes', 'selected-no', 'selected-partial');
+            });
+            
+            // Hide results
+            document.getElementById('vrioResultA').style.display = 'none';
+            document.getElementById('vrioResultB').style.display = 'none';
+        }
+
+        function populateSummary() {
+            const data = strategyData[selectedOption];
+            
+            // Calculate some metrics from the canvas
+            const targetData = factors.map(f => targetValues[f.id]);
+            const bumbleData = factors.map(f => f.bumble);
+            
+            let increasedFactors = [];
+            let decreasedFactors = [];
+            
+            factors.forEach((f, i) => {
+                if (targetData[i] > bumbleData[i]) {
+                    increasedFactors.push(f.name);
+                } else if (targetData[i] < bumbleData[i]) {
+                    decreasedFactors.push(f.name);
+                }
+            });
+            
+            // Get VRIO outcomes for both resources
+            const vrioOutcomeA = getVrioOutcome(vrioAnswersA);
+            const vrioOutcomeB = getVrioOutcome(vrioAnswersB);
+            
+            // Build VRIO summary HTML
+            let vrioSummaryHtml = '';
+            
+            if (vrioOutcomeA.text !== 'Not evaluated' || vrioOutcomeB.text !== 'Not evaluated') {
+                vrioSummaryHtml = `
+                    <div style="margin-top: 25px; padding: 20px; background: #f8f9fa; border-radius: 12px;">
+                        <h4 style="margin-bottom: 15px;">📊 VRIO Analysis Results</h4>
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Resource</th>
+                                    <th>VRIO Outcome</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>A:</strong> ${data.resourceAName}</td>
+                                    <td style="${vrioOutcomeA.class} font-weight: bold;">${vrioOutcomeA.text}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>B:</strong> ${data.resourceBName}</td>
+                                    <td style="${vrioOutcomeB.class} font-weight: bold;">${vrioOutcomeB.text}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        ${vrioOutcomeA.text !== 'Not evaluated' && vrioOutcomeB.text !== 'Not evaluated' ? 
+                            `<p style="margin-top: 15px; font-size: 0.9rem; color: #666;"><strong>Notice:</strong> Different resources within the same strategy can have different VRIO outcomes. This is why it's important to evaluate specific resources, not entire strategies.</p>` 
+                            : ''}
+                    </div>
+                `;
+            } else {
+                vrioSummaryHtml = `
+                    <div style="margin-top: 20px; padding: 15px; background: #fff3e0; border-radius: 8px; text-align: center;">
+                        <p style="color: #e65100;">⚠️ No resources were evaluated with VRIO. Consider going back to complete the analysis.</p>
+                    </div>
+                `;
+            }
+            
+            document.getElementById('summaryContent').innerHTML = `
+                <div class="summary-header">
+                    <div style="font-size: 2rem; margin-bottom: 10px;">${selectedOption === 1 ? '🧠' : selectedOption === 2 ? '🎉' : '🛡️'}</div>
+                    <div class="summary-strategy">${data.name}</div>
+                </div>
+                
+                <div class="canvas-summary">
+                    <div class="canvas-stat">
+                        <div class="canvas-stat-value">${increasedFactors.length}</div>
+                        <div class="canvas-stat-label">Factors to Increase</div>
+                    </div>
+                    <div class="canvas-stat">
+                        <div class="canvas-stat-value">${decreasedFactors.length}</div>
+                        <div class="canvas-stat-label">Factors to Decrease</div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 20px;">
+                    <p><strong>Your Strategy Canvas suggests Bumble would:</strong></p>
+                    <ul style="margin: 10px 0 0 20px;">
+                        ${increasedFactors.length > 0 ? `<li><strong>Invest more in:</strong> ${increasedFactors.join(', ')}</li>` : '<li>No factors increased from current position</li>'}
+                        ${decreasedFactors.length > 0 ? `<li><strong>Accept being weaker in:</strong> ${decreasedFactors.join(', ')}</li>` : '<li>No factors decreased (consider: is this realistic?)</li>'}
+                    </ul>
+                </div>
+                
+                ${decreasedFactors.length === 0 ? `
+                <div class="info-box warning" style="margin-top: 20px;">
+                    <h4>⚠️ No Trade-offs?</h4>
+                    <p>Your Strategy Canvas doesn't show any factors where Bumble would accept being weaker. Real strategy requires trade-offs — consider what Bumble would need to do <em>less</em> of to fund doing something else <em>more</em>.</p>
+                </div>
+                ` : ''}
+                
+                ${vrioSummaryHtml}
+                
+                <div class="info-box" style="margin-top: 20px;">
+                    <h4>💡 Strategic Insight</h4>
+                    <p>${getStrategicInsight()}</p>
+                </div>
+            `;
+            
+            document.getElementById('discussionQuestions').innerHTML = data.discussionQuestions.map(q => `<li>${q}</li>`).join('');
+        }
+
+        function getStrategicInsight() {
+            const insights = {
+                1: "This strategy bets that Bumble can build AI matching capabilities that beat Hinge — despite starting later and having fewer users to generate training data. The trade-off is significant: Bumble would abandon its distinctive women-first positioning to compete directly on a dimension where Hinge is already strong. The key question is whether psychology-based matching can overcome a data disadvantage, and whether users would choose Bumble's AI over Hinge's when both promise 'smart matching.'",
+                2: "In-person events are hard to scale but hard to copy. Bumble's women-first brand could translate well to creating 'safe spaces' for real-world meetups. However, events are fundamentally different from apps — different skills, different economics, different competitive dynamics. The key question is whether Bumble can build a global events operation, and whether this is a scalable business or a niche offering for major cities only.",
+                3: "Safety is authentically part of Bumble's DNA — the founding story, the Texas legislation, the dedicated staff. But safety features are increasingly 'table stakes' (expected on every app). The strategic question is whether Bumble can stay meaningfully ahead in a 'safety arms race,' or whether competitors will eventually match them. The upside: Bumble's authentic founding story gives it credibility that others can't easily replicate."
+            };
+            return insights[selectedOption];
+        }
+
+        function resetTool() {
+            currentScreen = 1;
+            selectedOption = null;
+            vrioAnswers = { v: null, r: null, i: null, o: null };
+            
+            // Reset progress dots
+            document.querySelectorAll('.progress-dot').forEach(dot => {
+                dot.classList.remove('active', 'completed');
+            });
+            document.querySelector('.progress-dot[data-screen="1"]').classList.add('active');
+            
+            // Reset option cards
+            document.querySelectorAll('.option-card').forEach(card => card.classList.remove('selected'));
+            document.getElementById('nextBtn2').disabled = true;
+            
+            // Reset sliders to Bumble defaults
+            factors.forEach(f => {
+                const slider = document.getElementById(`slider-${f.id}`);
+                if (slider) {
+                    slider.value = f.bumble;
+                    updateFactor(f.id, f.bumble);
+                }
+            });
+            
+            // Reset screens
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById('screen1').classList.add('active');
+            
+            window.scrollTo(0, 0);
+        }
+    </script>
+</body>
+</html>
